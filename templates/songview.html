@@ -1,0 +1,33 @@
+<button type="button" onclick="window.location.href='/'">Back to Index</button>
+
+<h1>{{ song.title }}</h1>
+<h1>Artist: {{ artist.name }}</h1>
+<p>Key: {{ key }}</p>
+<p>Genre: {{ song.rhythm }}</p>
+<p>Time Signature: {{ song.time_signature }}</p>
+
+<p>{{ song.description }}</p>
+
+<script>
+    var transpose = Number("{{ transpose or 0 }}");
+</script>
+
+<form action="/add_favorite/{{ song.artist_id }}?song_id={{ song.song_id }}" method="post">
+    <button type="submit">Add Artist to Favorites</button>
+<p>Chords: {{ chords|join(", ") }}</p>
+</form><button type="button" onclick="window.location.href='/songview/{{ song.song_id }}?transpose=' + (transpose + 1)">Transpose Up</button>
+<button type="button" onclick="window.location.href='/songview/{{ song.song_id }}?transpose=' + (transpose - 1)">Transpose Down</button>
+<!-- <p>Chords:</p>
+<ul>
+{% for chord in chords %}
+    <li>{{ chord }}</li>
+{% endfor %}
+</ul> -->
+<p>Diagrams:</p>
+{% for diagram in diagrams %}
+    <div>
+    {% for string in diagram %}
+        <pre>{{ string }}</pre>
+    {% endfor %}
+    </div>
+{% endfor %}

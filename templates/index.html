@@ -1,0 +1,89 @@
+<html>
+  <style>
+    body{ 
+      font-size: 15pt;
+      font-family: arial;
+    }
+    .hidden {
+    display: none;
+  }
+  </style>
+
+
+<body>
+  <h1>All That Jazz</h1>
+
+
+
+
+  <div>
+    {% if user %}
+    <p>Welcome, {{ user.name }}!</p> <!-- Assuming 'name' is a field on your user object -->
+    <div style="margin-bottom: 10px">
+      <a href="/profile">Profile</a>
+      <a href="/logout">Logout</a>
+    </div>
+    
+    {% else %}
+    <button><a href="login">Login</a></button>
+    {% endif %}
+
+  </div>
+
+
+
+  <div>
+    <form action="/songsearch" method="post">
+      <input type="text" name="name" placeholder="Search songs, or Enter">
+      <input type="submit" value="Search">
+    </form>
+  </div>
+
+
+
+  
+
+  {% if songs %}
+  {% for n in songs %}
+  <div>
+    "{{ n.title }}" of key {{ n.key }}, genre {{ n.rhythm }}, time_signature {{n.time_signature}}
+    <button type="button" id="toggleButton-{{ loop.index }}">Add to Playlist</button>
+    <button type="button" onclick="window.location.href='/songview/{{ n.song_id }}'">View</button>
+    <form action="/addSong" id="addSongForm-{{ loop.index }}" class="hidden" method="post">
+      <div class="container">
+        <div>
+          <label>To what playlist will you add?</label>
+          <select id="playlist-{{ loop.index }}" name="playlist" required>
+            {% if playlists %}
+
+            {% for list in playlists %}
+            <option id="{{loop.index}}" value="{{ list.name }}">{{ list.name }}</option>
+            {% endfor %}
+            {% endif %}
+          </select>
+        </div>
+        <input type="hidden" name="song_id" value="{{ n.song_id }}">
+        <button type="submit">Add</button>
+      </div>
+    </form>
+
+  </div>
+  {% endfor %}
+  {% else %}
+  <p>Please input a valid song!</p>
+  {% endif %}
+
+</body>
+
+<script>
+  document.querySelectorAll('[id^="toggleButton-"]').forEach(function (button) {
+    button.addEventListener('click', function () {
+      var index = this.id.split('-')[1];
+      var form = document.getElementById('addSongForm-' + index);
+      form.classList.toggle('hidden');
+    });
+  });
+</script>
+
+
+</html>

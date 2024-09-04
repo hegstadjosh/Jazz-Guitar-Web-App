@@ -1,0 +1,105 @@
+<html>
+<style>
+  body {
+    font-size: 15pt;
+    font-family: arial;
+  }
+  .hidden {
+    display: none;
+  }
+
+</style>
+
+
+<body>
+  <h1>Good to have you, {{ user.name }}!</h1>
+  <h2>Favorite Artists:</h2>
+<ul>
+{% for artist in fav_artists %}
+    <li>{{ artist.name }}</li>
+{% endfor %}
+</ul>
+  <p>Age: {{ user.age }}</p>
+  <p>Favorite keys: {{ user.favorite_keys }}</p>
+  <p>Favorite genres: {{ user.favorite_genres }}</p>
+  <p>Song Recommendations:</p>
+
+  <form action="/recs" method="post">
+    <button type="submit">Get the songs!</button>
+  </form>
+
+    {% if songs %}
+    <ul>
+      {% for song in songs %}
+      {% for artist in artists%}
+      {% if song.artist_id == artist.artist_id %}
+        <li>{{ song.title }}, by {{ artist.name }}, key/rhythm: {{ song.key }}/{{ song.rhythm }}</li>
+      {% endif %}
+      {% endfor %}
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+
+  <div>
+    My Playlist
+  </div>
+  
+  <button type="submit" id="toggleButton">Add a new playlist</button>
+
+
+  <form action="/playlist" id="playlistForm" class="hidden" method="post">
+    <div class="container">
+      <div>
+        <label for="pname"><b>PlayList Name</b></label>
+        <input type="text" name="pname" required>
+      </div>
+      <div>
+        <label for="description"><b>Description</b></label>
+        <input type="description" name="description" required>
+      </div>
+      <button type="submit">Create</button>
+    </div>
+  </form>
+
+
+
+    {% if playlists %}
+    <ol>
+      {% for playlist in playlists %}
+      <li>
+        {{ playlist.name }}, {{ playlist.description }}
+        
+        <ul>
+          {% for mySongs in playlist_songs[playlist.name] %}
+          <li>"{{ mySongs.title }}" of key {{ mySongs.key }}, genre {{ mySongs.rhythm }}, time_signature {{mySongs.time_signature}}</li>
+          {% endfor %}
+        </ul>
+
+      </li>
+      {% endfor %}
+    </ol>
+    {% else %}
+    <p>No Playlists</p>
+    {% endif %}
+
+
+
+  <button><a href="/">Back to Main page</a></button>
+
+
+
+<script>
+  document.getElementById('toggleButton').addEventListener('click', function () {
+    var form = document.getElementById('playlistForm');
+    form.classList.toggle('hidden');
+  });
+</script>
+
+
+
+
+</body>
+
+
+</html>
